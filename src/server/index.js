@@ -2,7 +2,7 @@ import http from 'node:http';
 import path from 'node:path'
 import * as fs from 'node:fs';
 import querystring from 'node:querystring'
-import { Router } from './routes.js'
+import  router  from './routes.js'
 
 import mongoose from 'mongoose'
 
@@ -20,7 +20,7 @@ const server = http.createServer((req, res) => {
 });
 
 function handleRequest(request, response) {
-    Router.handleRequest(request, response)
+    router.handleRequest(request, response)
 
     console.log(`Запрошенный адрес: ${request.url}`);
 

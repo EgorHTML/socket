@@ -15,21 +15,12 @@
             <el-button type="primary" @click="submitForm(ruleFormRef)">Submit</el-button>
             <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
         </el-form-item>
-
-        <button @click.prevent="fun">data</button>
     </el-form>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
-
-function fun() {
-    console.log(window.location.origin + '/data');
-    
-    fetch(window.location.origin + '/data').then(async data => console.log(await (data.json()))
-    )
-}
 
 const props = defineProps({
     isLogin: {
