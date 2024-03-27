@@ -30,7 +30,29 @@ const props = defineProps({
     }
 })
 
+const ruleForm = reactive({
+    login: '',
+    pass: '',
+    checkPass: '',
+})
+
 const ruleFormRef = ref<FormInstance>()
+
+const auth = async () => {
+    if (props.isLogin) {
+
+    } else {
+        const user = await fetch('/signup', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: ruleForm.login,
+                password: ruleForm.pass
+            })
+        })
+        console.log(await (user.json()), 'user');
+
+    }
+}
 
 const validatePass = (rule: any, value: any, callback: any) => {
     if (value === '') {
@@ -66,11 +88,7 @@ const validateLogin = (rule: any, value: any, callback: any) => {
     }
 }
 
-const ruleForm = reactive({
-    login: '',
-    pass: '',
-    checkPass: '',
-})
+
 
 const rules = reactive<FormRules<typeof ruleForm>>({
     login: [{ validator: validateLogin, trigger: 'blur' }],
@@ -82,7 +100,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            console.log('submit!')
+            auth()
         } else {
             console.log('error submit!')
             return false

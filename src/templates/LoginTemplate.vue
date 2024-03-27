@@ -1,5 +1,5 @@
 <template>
-    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <el-tabs v-model="activeName" class="demo-tabs">
         <el-tab-pane label="Регистрация" name="register">
             <LoginForm :is-login="isLogin" />
         </el-tab-pane>
@@ -17,10 +17,6 @@ import LoginForm from '../components/LoginForm.vue'
 const activeName = ref('register')
 
 const isLogin = computed(() => activeName.value === 'login')
-
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-    // console.log(tab, event)
-}
 </script>
 <style>
 

@@ -1,25 +1,28 @@
 import { signupPost } from "./controllers/authControllers.js"
+import {setCookies, getCookies} from './controllers/cookieController.js'
 
 class Router {
     static #instance;
 
-    routers = []
+    routes = []
 
-    getRoute(req){
-        const routers = this.routers.find(router => router.path === req.url && router.method === req.method)
-        return !!routers
+    constructor() {
+        if (Router.#instance != null) return Router.#instance;
+        Router.#instance = this;
+    }
+
+    getRoute(req) {
+        const route = this.routes.find(route => route.path === req.url && route.method === req.method)
+        return route
     }
 
     handleRequest(req, res) {
-        const routers = this.routers.filter(router => router.path === req.url && router.method === req.method)
-
-        routers.forEach(router => {
-            this.init(router.cb, req, res)
-        })
+        const route = this.getRoute(req)
+        this.init(route.cb, req, res)
     }
 
     addRoute(path, method, cb) {
-        this.routers.push({
+        this.routes.push({
             path, method, cb
         })
     }
@@ -27,17 +30,14 @@ class Router {
     init(cb, req, res) {
         cb(req, res)
     }
-
-    constructor() {
-        if (Router.#instance != null) return Router.#instance;
-        Router.#instance = this;
-    }
-
-
 }
 
 const router = new Router()
+
 router.addRoute('/signup', 'POST', signupPost)
+
+router.addRoute('/set-cookies', 'GET', setCookies)
+router.addRoute('/get-cookies', 'GET', getCookies)
 
 export default router
 
