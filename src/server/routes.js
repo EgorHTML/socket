@@ -5,6 +5,11 @@ class Router {
 
     routers = []
 
+    getRoute(req){
+        const routers = this.routers.find(router => router.path === req.url && router.method === req.method)
+        return !!routers
+    }
+
     handleRequest(req, res) {
         const routers = this.routers.filter(router => router.path === req.url && router.method === req.method)
 

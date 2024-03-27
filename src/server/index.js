@@ -1,38 +1,32 @@
 import http from 'node:http';
 import path from 'node:path'
 import * as fs from 'node:fs';
-import querystring from 'node:querystring'
-import  router  from './routes.js'
-
+import router from './routes.js'
 import mongoose from 'mongoose'
 
-// main().catch(err => console.log(err));
-
-// async function main() {
-//     await mongoose.connect('mongodb://127.0.0.1:27017/test');
-
-// }
-
 const __dirname = path.resolve();
+
+async function main() {
+    await mongoose.connect('mongodb://127.0.0.1:27017/test');
+}
+await main().catch(err => console.log(err));
+
 
 const server = http.createServer((req, res) => {
     handleRequest(req, res)
 });
 
 function handleRequest(request, response) {
-    router.handleRequest(request, response)
-
     console.log(`Запрошенный адрес: ${request.url}`);
 
     const filePath = path.join(__dirname, '/dist', (request.url === '/' ? '/index.html' : request.url));
-    if (fs.existsSync(filePath)) {
+
+    if (fs.existsSync(filePath))
         postStaticFilesToClient(filePath, response)
-    } else if (request.url === '/data') {
-        response.writeHead(200, { "Content-Type": "application/json" })
-        response.end(JSON.stringify({ data: 'test' }))
-    } else {
+    else if (router.getRoute(request))
+        router.handleRequest(request, response)
+    else
         postStaticFilesToClient(__dirname + '/dist/index.html', response)
-    }
 }
 
 function postStaticFilesToClient(url, res) {
