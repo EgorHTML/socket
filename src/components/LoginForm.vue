@@ -38,19 +38,39 @@ const ruleForm = reactive({
 
 const ruleFormRef = ref<FormInstance>()
 
-const auth = async () => {
-    if (props.isLogin) {
-
-    } else {
-        const user = await fetch('/signup', {
+const register = async () => {
+    try {
+        const response = await (fetch('/signup', {
             method: 'POST',
             body: JSON.stringify({
                 email: ruleForm.login,
                 password: ruleForm.pass
             })
-        })
-        console.log(await (user.json()), 'user');
+        }))
+            .then(async res => await res.json())
+        if (response.code === 201) {
+            location.assign('/')
+        }
+    } catch (error) {
+        console.warn(error);
+    }
+}
 
+const auth = async () => {
+    try {
+        const response = await (fetch('/signin', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: ruleForm.login,
+                password: ruleForm.pass
+            })
+        }))
+            .then(async res => await res.json())
+        if (response.code === 200) {
+            location.assign('/')
+        }
+    } catch (error) {
+        console.warn(error);
     }
 }
 
@@ -100,7 +120,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            auth()
+            if (!props.isLogin)
+                register()
+            else
+                auth()
         } else {
             console.log('error submit!')
             return false

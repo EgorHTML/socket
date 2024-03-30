@@ -1,10 +1,15 @@
 import http from 'node:http';
 import path from 'node:path'
 import * as fs from 'node:fs';
-import router from './routes.js'
+
+import Router from './routes/router.js'
+import authRoutes from './routes/authRoutes.js'
+import cookieRoutes from './routes/cookieRoutes.js'
+
 import mongoose from 'mongoose'
 
 const __dirname = path.resolve();
+const router = new Router([authRoutes, cookieRoutes])
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/test');

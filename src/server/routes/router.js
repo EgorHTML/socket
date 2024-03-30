@@ -1,12 +1,12 @@
-import { signupPost } from "./controllers/authControllers.js"
-import {setCookies, getCookies} from './controllers/cookieController.js'
-
 class Router {
     static #instance;
 
     routes = []
 
-    constructor() {
+    constructor(...routers) {
+        routers.forEach(router => {
+            this.routes.push(router.routes)
+        })
         if (Router.#instance != null) return Router.#instance;
         Router.#instance = this;
     }
@@ -32,14 +32,4 @@ class Router {
     }
 }
 
-const router = new Router()
-
-router.addRoute('/signup', 'POST', signupPost)
-
-router.addRoute('/set-cookies', 'GET', setCookies)
-router.addRoute('/get-cookies', 'GET', getCookies)
-
-export default router
-
-
-
+export default Router

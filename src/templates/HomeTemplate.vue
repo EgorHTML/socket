@@ -1,3 +1,7 @@
 <template>
-    <div>Home</div>
+    <div>
+        Home
+        <RouterLink to="/login">Go to Auth</RouterLink>
+    </div>
+
 </template>

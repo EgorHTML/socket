@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.5",
     "element-plus": "^2.6.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.3",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
