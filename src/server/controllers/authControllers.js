@@ -1,4 +1,4 @@
-import { user } from "../DB/models/User.js";
+import { User } from "../DB/models/User.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -13,8 +13,8 @@ export function signupPost(req, res) {
     getRequestBody(req)
         .then(async data => {
             try {
-                const User = await user.create(data)
-                const token = createToken(User._id)
+                const user = await User.create(data)
+                const token = createToken(user._id)
                 res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 1000};httpOnly=true`);
                 res.writeHead(201, { "Content-Type": "application/json" })
                 res.end(JSON.stringify({ message: 'success', code: 201 }))
@@ -38,11 +38,20 @@ export function signIn(req, res) {
         .then(async data => {
             const { email, password } = data
             try {
+                const user = await User.login(email, password)
+                const token = createToken(user._id)
+                res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 1000};httpOnly=true`);
                 res.writeHead(200, { "Content-Type": "application/json" })
-                res.end(JSON.stringify({ message: 'success', code: 200 }))
+                res.end(JSON.stringify({
+                    message: 'success', code: 200, data: {
+                        userId: user._id
+                    }
+                }))
             } catch (error) {
-                res.writeHead(400, { "Content-Type": "application/json" })
-                res.end(JSON.stringify({ message: error.message }))
+                res.writeHead(401, { "Content-Type": "application/json" })
+                res.end(JSON.stringify({
+                    message: error.message, code: 401, data: ''
+                }))
             }
         })
         .catch(error => {

@@ -1,18 +1,25 @@
 class Router {
-    static #instance;
+    static #instance
 
-    routes = []
+    #routes = []
 
-    constructor(...routers) {
-        routers.forEach(router => {
-            this.routes.push(router.routes)
-        })
+    middleWare
+
+    constructor(routers, middleWare) {
         if (Router.#instance != null) return Router.#instance;
         Router.#instance = this;
+
+        routers?.forEach(router => {
+            Router.getInstance().#routes.push(router.#routes)
+        })
+    }
+
+    static getInstance() {
+        return this.#instance
     }
 
     getRoute(req) {
-        const route = this.routes.find(route => route.path === req.url && route.method === req.method)
+        const route = this.#routes.find(route => route.path === req.url && route.method === req.method)
         return route
     }
 
@@ -22,7 +29,7 @@ class Router {
     }
 
     addRoute(path, method, cb) {
-        this.routes.push({
+        this.#routes.push({
             path, method, cb
         })
     }

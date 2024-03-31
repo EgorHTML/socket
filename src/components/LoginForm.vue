@@ -48,6 +48,7 @@ const register = async () => {
             })
         }))
             .then(async res => await res.json())
+        console.log(response, 'response');
         if (response.code === 201) {
             location.assign('/')
         }
@@ -66,8 +67,13 @@ const auth = async () => {
             })
         }))
             .then(async res => await res.json())
+
+        console.log(response, 'response');
+
         if (response.code === 200) {
-            location.assign('/')
+            // location.assign('/')
+        } else {
+            alert(response.message)
         }
     } catch (error) {
         console.warn(error);
