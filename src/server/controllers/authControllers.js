@@ -1,11 +1,13 @@
-import { User } from "../DB/models/User.js";
+import { User } from "../DB/mongo/models/User.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
+
 dotenv.config()
 
 function createToken(id) {
+    console.log(process.env.TokenExpiresInSeconds, 'process.env.TokenExpiresInSeconds');
     return jwt.sign({ id }, 'secret', {
-        expiresIn: process.env.TokenExpiresInSeconds || 1
+        expiresIn: 1800
     })
 }
 
@@ -13,9 +15,9 @@ export function signupPost(req, res) {
     getRequestBody(req)
         .then(async data => {
             try {
-                const user = await User.create(data)
+                const user = await User.create(JSON.parse(data))
                 const token = createToken(user._id)
-                res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 1000};httpOnly=true`);
+                res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 60000};httpOnly=true`);
                 res.writeHead(201, { "Content-Type": "application/json" })
                 res.end(JSON.stringify({ message: 'success', code: 201 }))
             } catch (error) {
@@ -36,11 +38,12 @@ export function loginGet(req, res) {
 export function signIn(req, res) {
     getRequestBody(req)
         .then(async data => {
-            const { email, password } = data
+            const { email, password } = JSON.parse(data)
             try {
+                console.log(process.env.TokenExpiresInMiliSeconds || 60000, 'process.env.TokenExpiresInMiliSeconds || 60000');
                 const user = await User.login(email, password)
                 const token = createToken(user._id)
-                res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 1000};httpOnly=true`);
+                res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 60000};httpOnly=true`);
                 res.writeHead(200, { "Content-Type": "application/json" })
                 res.end(JSON.stringify({
                     message: 'success', code: 200, data: {
@@ -60,7 +63,7 @@ export function signIn(req, res) {
         })
 }
 
-function getRequestBody(req) {
+export function getRequestBody(req) {
     let body = [];
     return new Promise((res, rej) => {
         req
@@ -69,9 +72,10 @@ function getRequestBody(req) {
             })
             .on('end', () => {
                 try {
-                    body = JSON.parse(Buffer.concat(body).toString())
+                    body = Buffer.concat(body).toString()
 
                     res(body)
+                    
                 } catch (error) {
                     console.error(error);
                     rej(error)
@@ -82,5 +86,4 @@ function getRequestBody(req) {
                 rej(error)
             });
     })
-
 }

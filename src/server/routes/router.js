@@ -5,7 +5,7 @@ class Router {
 
     middleWare
 
-    constructor(routers, middleWare) {
+    constructor(routers) {
         if (Router.#instance != null) return Router.#instance;
         Router.#instance = this;
 
@@ -18,14 +18,22 @@ class Router {
         return this.#instance
     }
 
+    setMiddleWare(middleWare) {
+        this.middleWare = middleWare
+    }
+
     getRoute(req) {
         const route = this.#routes.find(route => route.path === req.url && route.method === req.method)
         return route
     }
 
-    handleRequest(req, res) {
-        const route = this.getRoute(req)
-        this.init(route.cb, req, res)
+    async handleRequest(req, res) {
+        const f = await this.middleWare.handleRequest(req, res)
+        console.log(f, 'flag');
+        if (f !== false) {
+            const route = this.getRoute(req)
+            this.init(route.cb, req, res)
+        }
     }
 
     addRoute(path, method, cb) {

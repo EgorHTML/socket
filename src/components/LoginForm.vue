@@ -2,7 +2,7 @@
     <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" status-icon :rules="rules" label-width="auto"
         class="demo-ruleForm">
         <el-form-item label="Login" prop="login">
-            <el-input v-model="ruleForm.login" type="login" autocomplete="off" />
+            <el-input v-model="ruleForm.login" type="login" autocomplete="on" />
         </el-form-item>
         <el-form-item label="Password" prop="pass">
             <el-input v-model="ruleForm.pass" type="password" autocomplete="off" />
@@ -19,8 +19,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
+
+onMounted(() => {
+    console.log(1);
+
+})
 
 const props = defineProps({
     isLogin: {
@@ -71,7 +76,7 @@ const auth = async () => {
         console.log(response, 'response');
 
         if (response.code === 200) {
-            // location.assign('/')
+            location.assign('/')
         } else {
             alert(response.message)
         }
@@ -113,8 +118,6 @@ const validateLogin = (rule: any, value: any, callback: any) => {
         callback()
     }
 }
-
-
 
 const rules = reactive<FormRules<typeof ruleForm>>({
     login: [{ validator: validateLogin, trigger: 'blur' }],

@@ -9,7 +9,7 @@ export function getCookies(req, res) {
     res.end('cookie-get')
 }
 
-function parseCookies(request) {
+export function parseCookies(request) {
     const list = {};
     const cookieHeader = request.headers?.cookie;
     if (!cookieHeader) return list;

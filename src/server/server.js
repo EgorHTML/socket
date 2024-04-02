@@ -5,11 +5,20 @@ import * as fs from 'node:fs';
 import Router from './routes/router.js'
 import authRoutes from './routes/authRoutes.js'
 import cookieRoutes from './routes/cookieRoutes.js'
+import userRoutes from './routes/userAPI.js'
 
+import MiddleWare from './middleware/middleware.js';
+import authMiddleWare from './middleware/authMiddleWare.js'
+
+import MongoDB from './DB/mongo/mongo.js'
 import mongoose from 'mongoose'
 
 const __dirname = path.resolve();
-const router = new Router([authRoutes, cookieRoutes])
+const middleWare = new MiddleWare([authMiddleWare])
+const router = new Router([authRoutes, cookieRoutes, userRoutes])
+router.setMiddleWare(middleWare)
+
+const mongoDB = new MongoDB()
 
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/test');
