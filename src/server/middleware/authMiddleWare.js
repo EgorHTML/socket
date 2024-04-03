@@ -6,29 +6,31 @@ const middleWare = new MiddleWare()
 
 async function isLogin(req, res) {
     const token = parseCookies(req).jwt
-
+    let auth = true
     if (token) {
         jwt.verify(token, 'secret', (error, decoded) => {
             if (error) {
-                console.warn(error.message);
+                res.jwt = null
                 res.writeHead(401, { "Content-Type": "application/json" })
                 res.end(JSON.stringify({
-                    code: 401, message: 'Unauthorized '
+                    code: 401, message: error.message
                 }));
-                return false
+                auth = false
             } else {
                 res.jwt = decoded
                 console.log(decoded, 'decoded');
             }
         })
     } else {
+        res.jwt = null
         res.writeHead(401, { "Content-Type": "application/json" })
         res.end(JSON.stringify({
-            code: 401, message: 'Unauthorized '
+            code: 401, message: 'Unauthorized'
         }));
-        return false
+        auth = false
     }
-    return true
+
+    return auth
 }
 
 middleWare.addHandler("/api/", isLogin)

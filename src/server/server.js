@@ -14,7 +14,9 @@ import MongoDB from './DB/mongo/mongo.js'
 import mongoose from 'mongoose'
 
 const __dirname = path.resolve();
+
 const middleWare = new MiddleWare([authMiddleWare])
+
 const router = new Router([authRoutes, cookieRoutes, userRoutes])
 router.setMiddleWare(middleWare)
 

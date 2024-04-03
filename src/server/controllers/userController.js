@@ -18,9 +18,5 @@ export async function getUserData(req, res) {
         res.end(JSON.stringify({ message: error.message }))
     }
 
-
-
-
     console.log('api user!!');
-
 }

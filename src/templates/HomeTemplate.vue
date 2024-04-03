@@ -1,14 +1,17 @@
 <script setup>
 import { ref } from 'vue';
 import request from '../api/request';
-console.log(2);
+
 request('/api/user', {
     method: 'GET',
-}).then(async data => {
-    const response = await data.json()
-    console.log(response,'response');
-    email.value = response.data.email
 })
+    .then(async data => {
+        const response = await data.json()
+        email.value = response.data.email
+    })
+    .catch(error => {
+        console.warn(error);
+    })
 
 const email = ref('')
 </script>
@@ -18,5 +21,4 @@ const email = ref('')
         EMAIL: {{ email }} <br>
         <RouterLink to="/login">Go to Auth</RouterLink>
     </div>
-
 </template>

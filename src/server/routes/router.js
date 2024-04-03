@@ -3,7 +3,7 @@ class Router {
 
     #routes = []
 
-    middleWare
+    #middleWare
 
     constructor(routers) {
         if (Router.#instance != null) return Router.#instance;
@@ -14,26 +14,25 @@ class Router {
         })
     }
 
+    async handleRequest(req, res) {
+        const f = await this.#middleWare.handleRequest(req, res)
+        if (f !== false) {
+            const route = this.getRoute(req)
+            this.init(route.cb, req, res)
+        }
+    }
+
     static getInstance() {
         return this.#instance
     }
 
     setMiddleWare(middleWare) {
-        this.middleWare = middleWare
+        this.#middleWare = middleWare
     }
 
     getRoute(req) {
         const route = this.#routes.find(route => route.path === req.url && route.method === req.method)
         return route
-    }
-
-    async handleRequest(req, res) {
-        const f = await this.middleWare.handleRequest(req, res)
-        console.log(f, 'flag');
-        if (f !== false) {
-            const route = this.getRoute(req)
-            this.init(route.cb, req, res)
-        }
     }
 
     addRoute(path, method, cb) {
