@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
 
 const userSchema = new mongoose.Schema({
+    name: {
+        unique: false,
+        type: String,
+        required: false,
+        default: 'unknown'
+    },
     email: {
         unique: true,
         type: String,
@@ -11,6 +17,26 @@ const userSchema = new mongoose.Schema({
         type: String,
         minLength: 6,
         required: true
+    }
+})
+
+const userDataSchema = new mongoose.Schema({
+    name: {
+        unique: false,
+        type: String,
+        required: false,
+        default: 'unknown'
+    },
+    email: {
+        unique: true,
+        type: String,
+        required: true
+    },
+    online: {
+        unique: false,
+        type: Boolean,
+        required: false,
+        default: false
     }
 })
 
@@ -35,3 +61,4 @@ userSchema.pre('save', async function (next) {
 })
 
 export const User = mongoose.model('user', userSchema)
+export const UserData = mongoose.model('userData', userDataSchema)

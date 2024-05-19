@@ -17,6 +17,18 @@ export async function getUserData(req, res) {
         res.writeHead(400, { "Content-Type": "application/json" })
         res.end(JSON.stringify({ message: error.message }))
     }
+}
 
-    console.log('api user!!');
+export async function getUsers(req, res) {
+    const mongoDB = new MongoDB()
+
+    try {
+        const users = (await mongoDB.getUsers())
+        res.writeHead(200, { "Content-Type": "application/json" })
+        res.end(JSON.stringify({ data: { users } }))
+    } catch (error) {
+        console.log(error);
+        res.writeHead(400, { "Content-Type": "application/json" })
+        res.end(JSON.stringify({ message: error.message }))
+    }
 }

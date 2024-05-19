@@ -1,24 +1,29 @@
 <script setup>
-import { ref } from 'vue';
-import request from '../api/request';
+import HeaderLayout from '../components/home/HeaderLayout.vue'
+import { useHomeTabs } from '../store/Home/homeTabs';
 
-request('/api/user', {
-    method: 'GET',
+import { ref } from 'vue'
+
+const tabStore = useHomeTabs()
+const activeTab = ref(tabStore.activeTab)
+
+tabStore.$subscribe((mutation, state) => {
+    activeTab.value = state.activeTab
 })
-    .then(async data => {
-        const response = await data.json()
-        email.value = response.data.email
-    })
-    .catch(error => {
-        console.warn(error);
-    })
-
-const email = ref('')
 </script>
 
 <template>
-    <div>
-        EMAIL: {{ email }} <br>
-        <RouterLink to="/login">Go to Auth</RouterLink>
+    <div class="common-layout">
+        <el-container>
+            <el-header>
+                <HeaderLayout />
+            </el-header>
+            <el-container>
+                <el-aside width="200px">Aside</el-aside>
+                <el-main>
+                    <component :is="activeTab.component"></component>
+                </el-main>
+            </el-container>
+        </el-container>
     </div>
 </template>

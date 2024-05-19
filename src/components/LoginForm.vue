@@ -22,11 +22,6 @@
 import { onMounted, reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 
-onMounted(() => {
-    console.log(1);
-
-})
-
 const props = defineProps({
     isLogin: {
         required: true,

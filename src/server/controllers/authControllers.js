@@ -1,4 +1,4 @@
-import { User } from "../DB/mongo/models/User.js";
+import { User, UserData } from "../DB/mongo/models/User.js";
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
@@ -14,8 +14,11 @@ function createToken(id) {
 export function signupPost(req, res) {
     getRequestBody(req)
         .then(async data => {
+            let user
             try {
-                const user = await User.create(JSON.parse(data))
+                user = await User.create(JSON.parse(data))
+                console.log(user, 'userF');
+
                 const token = createToken(user._id)
                 res.setHeader('Set-Cookie', `jwt=${token};max-age=${process.env.TokenExpiresInMiliSeconds || 60000};httpOnly=true`);
                 res.writeHead(201, { "Content-Type": "application/json" })
@@ -24,10 +27,15 @@ export function signupPost(req, res) {
                 res.writeHead(400, { "Content-Type": "application/json" })
                 res.end(JSON.stringify({ message: error.message }))
             }
+
+
+            UserData.create(
+                user
+            )
         })
         .catch(error => {
-            res.writeHead(400, { "Content-Type": "application/json" })
-            res.end(JSON.stringify(error.message))
+            console.log('user Error');
+            console.log(error);
         })
 }
 
@@ -75,7 +83,7 @@ export function getRequestBody(req) {
                     body = Buffer.concat(body).toString()
 
                     res(body)
-                    
+
                 } catch (error) {
                     console.error(error);
                     rej(error)

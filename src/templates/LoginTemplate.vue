@@ -10,7 +10,6 @@
 </template>
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-import type { TabsPaneContext } from 'element-plus'
 
 import LoginForm from '../components/LoginForm.vue'
 
